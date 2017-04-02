@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<!--
+    Copyright (c) 2012-2016 Adobe Systems Incorporated. All rights reserved.
+
+    Licensed to the Apache Software Foundation (ASF) under one
+    or more contributor license agreements.  See the NOTICE file
+    distributed with this work for additional information
+    regarding copyright ownership.  The ASF licenses this file
+    to you under the Apache License, Version 2.0 (the
+    "License"); you may not use this file except in compliance
+    with the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software distributed under the License is distributed on an
+    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+     KIND, either express or implied.  See the License for the
+    specific language governing permissions and limitations
+    under the License.
+-->
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
+    <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width" />
+    <!-- This is a wide open CSP declaration. To lock this down for production, see below. -->
+   <!--  <meta http-equiv="Content-Security-Policy" content="default-src * 'unsafe-inline'; style-src 'self' 'unsafe-inline'; media-src *" /> -->
+    <!-- Good default declaration:
+    * gap: is required only on iOS (when using UIWebView) and is needed for JS->native communication
+    * https://ssl.gstatic.com is required only on Android and is needed for TalkBack to function properly
+    * Disables use of eval() and inline scripts in order to mitigate risk of XSS vulnerabilities. To change this:
+        * Enable inline JS: add 'unsafe-inline' to default-src
+        * Enable eval(): add 'unsafe-eval' to default-src
+    * Create your own at http://cspisawesome.com
+    -->
+    <meta http-equiv="Content-Security-Policy" content="default-src * data: gap: 'unsafe-inline' https://ssl.gstatic.com; style-src * 'unsafe-inline'; media-src *" />
+
+    <link rel="stylesheet" href="jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.css">
+    <script src="jquery.mobile-1.4.5/demos/js/jquery.js"></script>
+    <script src="jquery.mobile-1.4.5/jquery.mobile-1.4.5.min.js"></script>  
+    <script type="text/javascript" src="cordova.js"></script>
+    <script type="text/javascript" scr="statusBar.js"></script>
+    <script type="text/javascript">
+        
+
+    //password
+    $(document).on("click", "#parentVbtn", function(){
+        var fname = document.getElementById('fname').value;
+        var pass = document.getElementById('pass').value;
+        if (fname == "parent" && pass == "parent" ) {
+            window.location.href="index.html#pagetwo";
+        }else{
+            if (fname == "" || pass == "") {
+                alert("Insérer le nom et le mot de passe");
+            }else{
+                alert('Nom/Mot de pass invalid');
+                window.location.href="index.html#parentConfirm";
+            }
+        }
+    });
+
+    document.addEventListener("deviceready", onDeviceReady, false);
+        
+    var db = null;
+    function onDeviceReady(){
+        db = window.openDatabase("Activities","1.0","Activities Database", 1000000);
+        db.transaction(populateDB,errorDB,successDB);
+    }
+       
+    function populateDB(tx){
+        console.log("Database created");
+        tx.executeSql("DROP TABLE IF EXISTS Activities");
+        tx.executeSql("Create Table IF NOT EXISTS Activities (names TEXT, audio TEXT, img0 TEXT, txt0 TEXT, img1 TEXT, txt1 TEXT, img2 TEXT, txt2 TEXT, img3 TEXT, txt3 TEXT, img4 TEXT, txt4 TEXT)");
+
+        tx.executeSql("Insert into Activities values('Brosser les Dents', 'audio/brush.mp3', 'img/1.png','Mouiller la brosse à dents', 'img/2.png', 'Mets du dentifrice sur la brosse', 'img/3.png', 'Brosser les dents','img/4.png', 'Cracher dans l`évier', 'img/5.png', 'Rincer le brossse a dents')");
+
+        tx.executeSql("Insert into Activities values('Se Baigner', 'audio/chill.mp3', 'img/b1.png', 'Rentre dans le bain', 'img/b2.png', 'Se laver les cheveux avec un shampooing', 'img/b3.png', 'Se rinser le corps et cheveaux avec de l`eau', 'img/b4.png', 'Sortir de la baignoire', 'img/b5.png', 'Utiliser une serviette pour se secher')");
+        
+        
+
+        //tx.executeSql("Insert into Activities values('S'habiller', 'audio/relax.mp3', 'img/sock.png', 'Mets les Chaussettes', 'img/shoe.png', 'Mets les Chaussures')");
+        getData();
+        console.log("Database created part 2");
+    }
+
+    function successDB(){
+        console.log("Database is created successfully");
+    }
+
+    function getData(){//avoid duplication
+        db.transaction(catchData,errorDB,newData);
+    }
+
+    function catchData(tx){
+        console.log("catchData");
+        tx.executeSql("SELECT * from Activities", [], checkResult, errorDB);
+    }
+
+    function errorDB(error){
+        console.log("Error: " + error.code);
+    }
+
+    function checkResult(tx, response){
+        var myArr = [];
+        var len = response.rows.length;
+       
+        for (var i = 0; i < len; i++) {
+            myArr[0] = response.rows.item(i).names;
+            myArr[1] = response.rows.item(i).audio;
+            if (myArr[0] == document.getElementById('act').value || myArr[1] == document.getElementById('upAud').value) {
+               alert("Le contenu existe déjà.");
+            }
+        }
+    }
+
+    function newData(){
+        console.log("New Data are inserted");
+    }
+
+    //camera 
+
+    // $(document).on("click","#photo0",function(){
+    //     navigator.camera.getPicture(onSuccess, onFail, {
+    //         quality: 50,
+    //         destinationType: Camera.DestinationType.FILE_URI
+    //     });
+    // });
+
+    // function onSuccess(imageURI){
+    //     console.log(imageURI);
+    // }
+
+    // function onFail(message){
+    //     alert('Problem: ' + message);
+    // }
+    </script>
+</head>
+<body>
+    <div data-role="page" id="pageone" data-position="fixed">
+        <div data-role="header">
+            <h1>Autism App</h1>
+        </div>
+        <!-- ui-content add extra padding and margin in the main page-->
+
+        <div data-role="main" class="ui-content">
+            <a href="#parentConfirm" id="parentbtn" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slideup">Parent</a>
+            <a href="#pagethree" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Enfant</a>
+        </div>
+    </div>
+
+    <div data-role="page" id="pagetwo">
+        <div data-role="header" data-position="fixed">
+            <h1>Autism App</h1>
+        </div>
+        <!-- ui-content add extra padding and margin in the main page-->
+
+        <div data-role="main" class="ui-content">
+            <a data-ajax="false" href="activity.html#pone" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Ajouter une activité</a>
+            <a data-ajax="false" href="activity.html#activityMain" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Montrer les activités</a>
+            <a href="" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Supprimer une activité</a>
+            <a href="#pageone" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slidedown">Annuler</a>
+        </div>
+    </div>
+
+    <div data-role="page" id="pagethree" data-position="fixed">
+        <div data-role="header" data-position="fixed">
+            <h1>Autism App</h1>
+        </div>
+        <!-- ui-content add extra padding and margin in the main page-->
+
+        <div data-role="main" class="ui-content">
+            <a href="#" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slideup">Commencer Activité</a>
+            <a href="#pageone" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Sortir</a>
+        </div>
+    </div>
+<!-- Parent Verification Content -->
+    <div data-role="page" id="parentConfirm">
+        <div data-role="header" data-position="fixed">
+            <h1>Autism App</h1>
+        </div>
+
+        <div data-role="main" class="ui-content">
+
+                <label for="fname">Nom:</label>
+                <input type="text" placeholder="Nom" name="fname" id="fname" data-clear-btn="true">
+                <div id="errorName" style="color:red;"></div>
+
+                <label for="pass">Mot de Passe:</label>
+                <input type="password" placeholder="Mot de passe" name="pass" id="pass" data-clear-btn="true">
+                <div id="errorPass" style="color:red;"></div>
+
+                <a href="index.html#pagethree" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Annuler</a>
+                <input type="button" id="parentVbtn" data-ajax="false" data-theme="b" value="Confirmer" />
+        </div>
+    </div>
+</html>

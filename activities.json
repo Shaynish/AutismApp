@@ -1,0 +1,56 @@
+{
+      "activities": [
+         {
+            "names": "Brosser les Dents",
+            "audio": "audio/brush.mp3",
+            "activity": [{
+               "image": "img/1.png",
+               "text": "Mouiller la brosse à dents"},
+               {
+               "image": "img/2.png",
+               "text": "Mets du dentifrice sur la brosse"},
+               {
+               "image": "img/3.png",
+               "text": "Brosser les dents"},
+               {
+               "image": "img/4.png",
+               "text": "Cracher dans l`évier"},
+               {
+               "image": "img/5.png",
+               "text": "Rincer le brossse a dents"
+            }]
+         },
+         {
+            "names": "Se Baigner",
+            "audio": "audio/chill.mp3",
+            "activity": [{
+               "image": "img/b1.png",
+               "text": "Rentre dans le bain"},
+               {
+               "image": "img/b2.png",
+               "text": "Se laver les cheveux avec un shampooing"},
+               {
+               "image": "img/b3.png",
+               "text": "Se rinser le corps et cheveaux avec de l`eau"},
+               {
+               "image": "img/b4.png",
+               "text": "Sortir de la baignoire"},
+               {
+               "image": "img/b5.png",
+               "text": "Utiliser une serviette pour se secher"
+            }]
+         },
+         {
+            "names": "S'habiller",
+            "audio": "audio/relax.mp3",
+            "activity": [{
+               "image": "img/sock.png",
+               "text": "Mets les Chaussettes"},
+               {
+               "image": "img/shoe.png",
+               "text": "Mets les Chaussures"
+            }]
+         }
+      ]
+   
+}
