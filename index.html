@@ -44,7 +44,6 @@
     <script type="text/javascript" src="cordova.js"></script>
     <script type="text/javascript" scr="statusBar.js"></script>
     <script type="text/javascript">
-        
 
     //password
     $(document).on("click", "#parentVbtn", function(){
@@ -62,30 +61,37 @@
         }
     });
 
+    //database
     document.addEventListener("deviceready", onDeviceReady, false);
         
     var db = null;
     function onDeviceReady(){
         db = window.openDatabase("Activities","1.0","Activities Database", 1000000);
-        db.transaction(populateDB,errorDB,successDB);
+        db.transaction(populateDB,successDB, errorDB);
     }
-       
+
     function populateDB(tx){
         console.log("Database created");
         tx.executeSql("DROP TABLE IF EXISTS Activities");
-        tx.executeSql("Create Table IF NOT EXISTS Activities (names TEXT, audio TEXT, img0 TEXT, txt0 TEXT, img1 TEXT, txt1 TEXT, img2 TEXT, txt2 TEXT, img3 TEXT, txt3 TEXT, img4 TEXT, txt4 TEXT)");
-
-        tx.executeSql("Insert into Activities values('Brosser les Dents', 'audio/brush.mp3', 'img/1.png','Mouiller la brosse à dents', 'img/2.png', 'Mets du dentifrice sur la brosse', 'img/3.png', 'Brosser les dents','img/4.png', 'Cracher dans l`évier', 'img/5.png', 'Rincer le brossse a dents')");
-
-        tx.executeSql("Insert into Activities values('Se Baigner', 'audio/chill.mp3', 'img/b1.png', 'Rentre dans le bain', 'img/b2.png', 'Se laver les cheveux avec un shampooing', 'img/b3.png', 'Se rinser le corps et cheveaux avec de l`eau', 'img/b4.png', 'Sortir de la baignoire', 'img/b5.png', 'Utiliser une serviette pour se secher')");
-        
-        
-
-        //tx.executeSql("Insert into Activities values('S'habiller', 'audio/relax.mp3', 'img/sock.png', 'Mets les Chaussettes', 'img/shoe.png', 'Mets les Chaussures')");
+        tx.executeSql("Create Table IF NOT EXISTS Activities (names TEXT, audio TEXT, img0 TEXT, txt0 TEXT, img1 TEXT, txt1 TEXT, img2 TEXT, txt2 TEXT, img3 TEXT, txt3 TEXT, img4 TEXT, txt4 TEXT)",[],sqlSuccess,errorDB);
+        //tx.executeSql("Insert into Activities values('Brosser les Dents', 'audio/brush.mp3', 'img/1.png','Mouiller la brosse à dents', 'img/2.png', 'Mets du dentifrice sur la brosse', 'img/3.png', 'Brosser les dents','img/4.png', 'Cracher dans l`évier', 'img/5.png', 'Rincer le brossse a dents')");
         getData();
         console.log("Database created part 2");
     }
-
+    function sqlSuccess(tx, response){
+        console.log("SQL Success");
+        db.readTransaction(function(tx){
+            tx.executeSql( "SELECT COUNT(*) AS c FROM ACTIVITIES", [] , function(tx, response){
+                console.log("num. of rows: " +response.rows[0].c);
+                if(response.rows[0].c == 0){
+                    tx.executeSql("Insert into Activities values('Brosser les Dents', 'audio/brush.mp3', 'img/1.png','Mouiller la brosse à dents', 'img/2.png', 'Mets du dentifrice sur la brosse', 'img/3.png', 'Brosser les dents','img/4.png', 'Cracher dans l`évier', 'img/5.png', 'Rincer le brossse a dents')");
+                    console.log("Zero data fyt");
+                }else{
+                    console.log("Fuck you");
+                }
+            });
+        });
+    }
     function successDB(){
         console.log("Database is created successfully");
     }
@@ -94,19 +100,20 @@
         db.transaction(catchData,errorDB,newData);
     }
 
-    function catchData(tx){
+    function catchData(tx, response){
         console.log("catchData");
         tx.executeSql("SELECT * from Activities", [], checkResult, errorDB);
     }
 
     function errorDB(error){
-        console.log("Error: " + error.code);
+        console.log("Error: " + error);
     }
 
     function checkResult(tx, response){
+        console.log("checkResult");
         var myArr = [];
         var len = response.rows.length;
-       
+        alert(len);
         for (var i = 0; i < len; i++) {
             myArr[0] = response.rows.item(i).names;
             myArr[1] = response.rows.item(i).audio;
@@ -160,7 +167,7 @@
         <div data-role="main" class="ui-content">
             <a data-ajax="false" href="activity.html#pone" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Ajouter une activité</a>
             <a data-ajax="false" href="activity.html#activityMain" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Montrer les activités</a>
-            <a href="" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Supprimer une activité</a>
+            <a href="supprimer.html" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Supprimer une activité</a>
             <a href="#pageone" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slidedown">Annuler</a>
         </div>
     </div>
@@ -184,16 +191,16 @@
 
         <div data-role="main" class="ui-content">
 
-                <label for="fname">Nom:</label>
-                <input type="text" placeholder="Nom" name="fname" id="fname" data-clear-btn="true">
-                <div id="errorName" style="color:red;"></div>
+            <label for="fname">Nom:</label>
+            <input type="text" placeholder="Nom" name="fname" id="fname" data-clear-btn="true">
+            <div id="errorName" style="color:red;"></div>
 
-                <label for="pass">Mot de Passe:</label>
-                <input type="password" placeholder="Mot de passe" name="pass" id="pass" data-clear-btn="true">
-                <div id="errorPass" style="color:red;"></div>
+            <label for="pass">Mot de Passe:</label>
+            <input type="password" placeholder="Mot de passe" name="pass" id="pass" data-clear-btn="true">
+            <div id="errorPass" style="color:red;"></div>
 
-                <a href="index.html#pagethree" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Annuler</a>
-                <input type="button" id="parentVbtn" data-ajax="false" data-theme="b" value="Confirmer" />
+            <a href="index.html#pagethree" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Annuler</a>
+            <input type="button" id="parentVbtn" data-ajax="false" data-theme="b" value="Confirmer" />
         </div>
     </div>
 </html>

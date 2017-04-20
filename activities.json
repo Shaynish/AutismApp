@@ -39,17 +39,6 @@
                "image": "img/b5.png",
                "text": "Utiliser une serviette pour se secher"
             }]
-         },
-         {
-            "names": "S'habiller",
-            "audio": "audio/relax.mp3",
-            "activity": [{
-               "image": "img/sock.png",
-               "text": "Mets les Chaussettes"},
-               {
-               "image": "img/shoe.png",
-               "text": "Mets les Chaussures"
-            }]
          }
       ]
    

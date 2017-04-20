@@ -49,37 +49,6 @@
     </style>
     <script type="text/javascript">
 
-    // $(document).on("pageinit","#activityMain" ,function(){
-    //     var btns = '';
-    //     $.getJSON("activities.json", function(json){
-    //         for (key in json){
-    //             $.each(json[key], function(k, v){
-    //               $("#showAct").append( '<input id="btnid'+k+'" data-role="button" readOnly="true" class="ui-btn ui-btn-b ui-shadow ui-corner-all" value="'+v.names+'"></input><br/>');
-    //             });
-    //         }
-    //         $('[id^=btnid]').on("click", function(event, ui){
-    //             var names = $(this).attr('value');
-    //             for (key in json){
-    //                 $.each(json[key], function(k, v){
-    //                     if (names === v.names) {
-    //                         var act = v.activity;
-    //                         window.location.href="#activityPlan";
-    //                         $("#showSteps").empty();
-    //                         $.each(act, function(i,f){
-    //                             $("#showSteps").append('<div id="div'+i+'"><img src="' +f.image +'" /><br/><input value="' + f.text +'"/><br/><button id="btns'+i+'">Continuer</button></div><br/><br/>');
-    //                         });
-    //                         $('[id^=btns]').on("click",function(){
-    //                             var divs = $(this).attr('id').substring(4);
-    //                             $("#div" + divs).hide();
-    //                         });
-    //                     };
-    //                 });
-    //             }
-    //         });
-            
-    //     });
-    // });
-
     $(document).on("click", "#stepsbtn", function(){
             
         var steps = document.getElementById('txtsteps').value;
@@ -152,16 +121,63 @@
         console.log("results are out");
         var len = response.rows.length;
         var temp = '';
+        var zam = '';
+        camp = '';
+        $.getJSON("activities.json", function(json){
+            for (key in json){
+                $.each(json[key], function(k, v){
+                    zam += '<input id="astek'+k+'" data-role="button" readOnly="true" class="ui-btn ui-btn-b ui-shadow ui-corner-all" value="'+v.names+'"></input>';
+                });
+                $("#showAct").append(zam);
+                $('[id^=astek]').on("click", function(){
+                console.log("json buttons");
+                var names = $(this).attr('value');
+                for (key in json){
+                    $.each(json[key], function(k, v){
+                        if (names === v.names) {
+                            console.log(v.names);
+                            var act = v.activity;
+                            $.each(act, function(i,f){
+                                if (i == 0) {
+                                    camp += '<p id="jbtns">Shay ki ggt' + i + '</p>';
+                                }else{
+                                    camp += '<div id="div'+i+'"><img src="' +f.image +'" /><br/><input value="' + f.text +'"/><br/><button id="jbtn'+i+'">Continuer</button></div><br/><br/>';
+                                }
+                            });
+                        };
+                            $("#jsonAct").append(camp);
+                            window.location.href="activity.html#viewPlan";
+                            // $('[id^=div]').hide();
+                            // $('#jbtns').on('click',function(){
+                            //     $('#dvd').hide();
+                            //     $('#div1').show();
+                            // });
+                            // $('[id^=jbtn]').on("click",function(){
+                            //     var divs = parseInt($(this).attr('id').substring(4));
+                            //     var divss = divs +1;
+                            //     $("#div" + divs).hide();
+                            //     $("#div" + divss).show();
+                            // });
+                    });
+                }
+            });
+            }
+
+
+        
+
         for (var i = 0; i < len; i++) {
 
-            temp += '<input id="btnid'+i+'" data-role="button" readOnly="true" class="ui-btn ui-btn-b ui-shadow ui-corner-all" value="'+response.rows.item(i).names+'"></input><br/>';
+            temp += '<input id="btnid'+i+'" data-role="button" readOnly="true" class="ui-btn ui-btn-b ui-shadow ui-corner-all" value="'+response.rows.item(i).names+'"></input>';
         }
-        
+        temp += '<input class="ui-btn ui-btn-b ui-shadow ui-corner-all" id="annu" value="Annuler" />';
         $("#showAct").append(temp);
         $('[id^=btnid]').on("click",function(){
             var attrName = $(this).attr('value');
             var vemp = "";
-            
+        $('[id^=annu]').on("click", function(){
+            window.location.href = 'index.html#pagetwo';
+        });
             for (var i = 0; i < len; i++) {
                 if(attrName == response.rows.item(i).names){
                     
@@ -179,7 +195,7 @@
                     vemp = '<div id="div0"><img src="' +response.rows.item(i).img0 +'" /><br/><input value="' + response.rows.item(i).txt0 +'"/><br/><button id="buttn0">Continuer</button></div><br/><div id="div1"><img src="' +response.rows.item(i).img1 +'" /><br/><input value="' + response.rows.item(i).txt1 +'"/><br/><button id="buttn1">Continuer</button></div><br/><div id="div2"><img src="' +response.rows.item(i).img2 +'" /><br/><input value="' + response.rows.item(i).txt2 +'"/><br/><button id="buttn2">Continuer</button></div><br/><div id="div3"><img src="' +response.rows.item(i).img3 +'" /><br/><input value="' + response.rows.item(i).txt3 +'"/><br/><button id="buttn3">Continuer</button></div><br/><div id="div4"><img src="' +response.rows.item(i).img4 +'" /><br/><input value="' + response.rows.item(i).txt4 +'"/><br/><button id="buttn4">Continuer</button></div><br/><br/><button id="terminer">Terminer</button>';
                     //}
                     
-                    $("#showSteps").append(vemp);
+                    $("#showSteps").empty().append(vemp);
                     window.location.href="activity.html#activityPlan";
                     $('[id^=buttn]').on("click",function(){
                         var divs = $(this).attr('id').substring(5);
@@ -192,6 +208,7 @@
                 }
             }
         });
+});
     }
 
     function catchData(tx){
@@ -219,8 +236,27 @@
     $(document).on("click","#terminer",function(){
         window.location.href="activity.html#message";
     });
+    $(document).on('pageinit', '#message', function(){ 
+        var audio = new Audio('../audio/reward.mp3');
+        audio.play();
+        audio.loop = true;
+        $('[id^=termss]').on('click',function(){
+            audio.pause();
+            audio.currentTime = 0;
+        });
+    });
 
-    $
+
+
+    var pictureSource;   // picture source
+    var destinationType; // sets the format of returned value 
+
+    $(document).on('pageinit','#ptwo',function(){
+        pictureSource=navigator.camera.PictureSourceType;
+        destinationType=navigator.camera.DestinationType;
+    });
+
+    
     </script>
 </head>
 <body>
@@ -256,8 +292,6 @@
             <div id="activitynode">
             </div>
 
-            <a href="#pone" class="ui-btn ui-btn-b ui-shadow ui-corner-all" data-transition="slide">Annuler</a>
-
             <input type="button" value="Enregistrer" class="ui-btn-b ui-shadow ui-corner-all" id="save" data-ajax="false" data-theme="b"/>
             </div>
         </div>
@@ -269,26 +303,27 @@
         </div>
         <!-- ui-content add extra padding and margin in the main page-->
 
-        <div data-role="main" align="center" id="showAct" class="ui-content">
-            <script type="text/javascript">
-                // var audio = new Audio('../audio/celtic.mp3',
-                //     function (){
-                //         alert("Load successfully");
-                //     },
-                //     function (err){
-                //         alert("Error: " + err);
-                //     });
-                // audio.play();
-            </script>
+        <div data-role="main" align="center" class="ui-content">
+            <div id="showAct" ></div>
         </div>
     </div>
 
-    <div data-role="page" id="activityPlan" >
+    <!-- JSON ACTIVITY -->
+    <div data-role="page" data-ajax="false" id="viewPlan" >
         <div data-role="header" data-position="fixed">
             <h1>Autism App</h1>
         </div>
         <!-- ui-content add extra padding and margin in the main page-->
+        <div data-role="main" align="center" class="ui-content">
+            <div id="jsonAct"></div>
+        </div>
+    </div>
 
+    <div data-role="page" data-ajax="false" id="activityPlan" >
+        <div data-role="header" data-position="fixed">
+            <h1>Autism App</h1>
+        </div>
+        <!-- ui-content add extra padding and margin in the main page-->
         <div data-role="main" align="center" class="ui-content">
             <div id="showSteps"></div>
         </div>
@@ -300,17 +335,7 @@
         <!-- ui-content add extra padding and margin in the main page-->
 
         <div data-role="main" align="center" id="congrats" class="ui-content">
-            <script type="text/javascript">
-                var audio = new Audio('../audio/reward.mp3');
-                audio.play();
-                audio.loop = true;
-                $('[id^=termss]').on('click',function(){
-                    audio.pause();
-                    audio.currentTime = 0;
-                });
-            </script>
             <div class="animated tada me">
-
                 <label><h1>Bravo</h1></label>
                 <img src="img/smiley.png" style="width:90%;height:90%;">
             </div>
